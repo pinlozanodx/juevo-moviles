@@ -1,0 +1,44 @@
+/* styles.css */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #4CAF50;
+    font-family: Arial, sans-serif;
+}
+.game-container {
+    background-color: #6ab04c;
+    padding: 10px;
+    border-radius: 10px;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 24px;
+    color: white;
+    padding: 10px;
+}
+canvas {
+    background: repeating-linear-gradient(
+        45deg,
+        #a5d6a7,
+        #a5d6a7 20px,
+        #81c784 20px,
+        #81c784 40px
+    );
+    border-radius: 10px;
+}
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+.btn {
+    padding: 10px;
+    margin: 5px;
+    font-size: 18px;
+    cursor: pointer;
+}

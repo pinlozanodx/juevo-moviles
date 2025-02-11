@@ -1,0 +1,28 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de la Serpiente</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <span>🍎 <span id="score">0</span></span>
+            <span>🏆 <span id="highScore">0</span></span>
+        </div>
+        <canvas id="gameCanvas" width="600" height="600"></canvas>
+        <div class="controls">
+            <button class="btn" data-direction="up">⬆️</button>
+            <div>
+                <button class="btn" data-direction="left">⬅️</button>
+                <button class="btn" data-direction="down">⬇️</button>
+                <button class="btn" data-direction="right">➡️</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
