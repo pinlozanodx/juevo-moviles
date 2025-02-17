@@ -94,7 +94,7 @@ function moveSnake() {
     
     if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height || isCollisionWithObstacles()) {
         clearInterval(gameInterval);
-        alert("Game Over!");
+        alert("¡Perdedor lol!");
         updateScore();
         restartGame();
     }
