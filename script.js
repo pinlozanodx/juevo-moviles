@@ -4,9 +4,8 @@ const scoreDisplay = document.getElementById("score");
 const highScoreDisplay = document.getElementById("highScore");
 const timerDisplay = document.getElementById("timer");
 const menu = document.getElementById("menu");
-const startBtn = document.getElementById("start");
-const restartBtn = document.getElementById("restart");
-const eatSound = document.getElementById("eatSound");
+const restartBtn = document.getElementById("restart"); // Asegúrate de tener este elemento
+const eatSound = new Audio('eatSound.mp3'); // Asegúrate de tener el archivo de sonido
 
 const box = 20;
 let snake = [{ x: 10 * box, y: 10 * box }];
@@ -21,8 +20,11 @@ let timerInterval;
 let isPaused = false;
 
 document.addEventListener("keydown", handleKeyPress);
-startBtn.addEventListener("click", startGame);
-restartBtn.addEventListener("click", resetGame);
+document.querySelectorAll(".btn").forEach(button => {
+    button.addEventListener("click", function() {
+        changeDirection({ key: button.getAttribute("data-direction") });
+    });
+});
 
 function handleKeyPress(event) {
     if (event.key === " ") {
@@ -49,7 +51,7 @@ function togglePause() {
 }
 
 function changeDirection(event) {
-    const key = event.key;
+    const key = event.key || event.target.getAttribute("data-direction");
     if ((key === "ArrowUp" || key === "w") && direction !== "DOWN") nextDirection = "UP";
     if ((key === "ArrowDown" || key === "s") && direction !== "UP") nextDirection = "DOWN";
     if ((key === "ArrowLeft" || key === "a") && direction !== "RIGHT") nextDirection = "LEFT";
