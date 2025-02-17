@@ -3,7 +3,8 @@ const ctx = canvas.getContext("2d");
 const scoreDisplay = document.getElementById("score");
 const highScoreDisplay = document.getElementById("highScore");
 const timerDisplay = document.getElementById("timer");
-const restartBtn = document.getElementById("restart");
+const menu = document.getElementById("menu");
+const startBtn = document.getElementById("start");
 const eatSound = document.getElementById("eatSound");
 
 const box = 20;
@@ -16,28 +17,33 @@ let gameInterval;
 let timer = 0;
 let timerInterval;
 let nextDirection = direction;
+let isPaused = false;
 
 document.addEventListener("keydown", handleKeyPress);
-document.querySelectorAll(".btn").forEach(button => {
-    button.addEventListener("click", () => changeDirection({ key: getKeyFromDirection(button.dataset.direction) }));
-});
-restartBtn.addEventListener("click", resetGame);
-
-function getKeyFromDirection(direction) {
-    return {
-        up: "ArrowUp",
-        down: "ArrowDown",
-        left: "ArrowLeft",
-        right: "ArrowRight"
-    }[direction];
-}
+startBtn.addEventListener("click", startGame);
 
 function handleKeyPress(event) {
     if (event.key === " ") {
         resetGame();
+    } else if (event.key === "Escape") {
+        togglePause();
     } else {
         changeDirection(event);
     }
+}
+
+function togglePause() {
+    if (isPaused) {
+        gameInterval = setInterval(draw, 100);
+        timerInterval = setInterval(() => {
+            timer++;
+            timerDisplay.textContent = timer;
+        }, 1000);
+    } else {
+        clearInterval(gameInterval);
+        clearInterval(timerInterval);
+    }
+    isPaused = !isPaused;
 }
 
 function changeDirection(event) {
@@ -49,6 +55,7 @@ function changeDirection(event) {
 }
 
 function draw() {
+    if (isPaused) return;
     direction = nextDirection;
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -99,6 +106,7 @@ function isCollision(head) {
 }
 
 function startGame() {
+    menu.style.display = "none";
     score = 0;
     snake = [{ x: 10 * box, y: 10 * box }];
     direction = "RIGHT";
@@ -106,6 +114,7 @@ function startGame() {
     food = { x: Math.floor(Math.random() * 30) * box, y: Math.floor(Math.random() * 30) * box };
     timer = 0;
     timerDisplay.textContent = 0;
+    isPaused = false;
     gameInterval = setInterval(draw, 100);
     timerInterval = setInterval(() => {
         timer++;
@@ -116,7 +125,5 @@ function startGame() {
 function resetGame() {
     clearInterval(gameInterval);
     clearInterval(timerInterval);
-    startGame();
+    menu.style.display = "block";
 }
-
-startGame();
