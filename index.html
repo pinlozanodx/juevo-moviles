@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Juego de la Serpiente</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="script.js" defer></script> <!-- Asegúrate de que este script esté enlazado correctamente -->
     <style>
         body {
             display: flex;
@@ -41,9 +40,6 @@
             font-size: 20px;
             cursor: pointer;
         }
-        #restart {
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -52,7 +48,7 @@
         <p>Controles:</p>
         <p>⬆️ Arriba | ⬇️ Abajo | ⬅️ Izquierda | ➡️ Derecha</p>
         <p>Espacio: Reiniciar | Escape: Pausar</p>
-        <button onclick="startGame()">Iniciar Juego</button>
+        <button id="startBtn">Iniciar Juego</button>
     </div>
 
     <div class="game-container" id="gameContainer">
@@ -65,9 +61,12 @@
                 <button class="btn" data-direction="right">➡️</button>
             </div>
         </div>
-        <div id="restart">
-            <button onclick="resetGame()">Reiniciar Juego</button>
+        <div id="scoreDisplay">
+            <p>Puntaje: <span id="score">0</span></p>
         </div>
+        <button id="restartBtn" style="display:none;">Reiniciar Juego</button>
     </div>
+
+    <script src="script.js"></script> 
 </body>
 </html>
