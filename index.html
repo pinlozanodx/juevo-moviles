@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Juego de la Serpiente</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script> <!-- Asegúrate de que este script esté enlazado correctamente -->
     <style>
         body {
             display: flex;
@@ -40,6 +41,9 @@
             font-size: 20px;
             cursor: pointer;
         }
+        #restart {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -61,29 +65,9 @@
                 <button class="btn" data-direction="right">➡️</button>
             </div>
         </div>
+        <div id="restart">
+            <button onclick="resetGame()">Reiniciar Juego</button>
+        </div>
     </div>
-
-    <script>
-        let gameRunning = false;
-        let paused = false;
-
-        function startGame() {
-            document.getElementById('menu').style.display = 'none';
-            document.getElementById('gameContainer').style.display = 'flex';
-            gameRunning = true;
-            paused = false;
-            // Aquí va la inicialización del juego
-        }
-
-        document.addEventListener("keydown", function(event) {
-            if (event.code === "Escape" && gameRunning) {
-                paused = !paused;
-                alert(paused ? "Juego pausado" : "Juego reanudado");
-            }
-            if (event.code === "Space" && gameRunning) {
-                startGame();
-            }
-        });
-    </script>
 </body>
 </html>
