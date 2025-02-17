@@ -5,26 +5,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Juego de la Serpiente</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #222;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .menu {
+            text-align: center;
+        }
+        .game-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .control-row {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 10px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <div class="game-container">
-        <div class="header">
-            <span>🍎 <span id="score">0</span></span>
-            <span>🏆 <span id="highScore">0</span></span>
-            <span>⏳ <span id="timer">0</span> s</span>
-        </div>
+    <div class="menu" id="menu">
+        <h1>Juego de la Serpiente</h1>
+        <p>Controles:</p>
+        <p>⬆️ Arriba | ⬇️ Abajo | ⬅️ Izquierda | ➡️ Derecha</p>
+        <p>Espacio: Reiniciar | Escape: Pausar</p>
+        <button onclick="startGame()">Iniciar Juego</button>
+    </div>
+
+    <div class="game-container" id="gameContainer">
         <canvas id="gameCanvas" width="600" height="600"></canvas>
         <div class="controls">
-            <button class="btn" data-direction="arriba">⬆️</button>
-            <div>
-                <button class="btn" data-direction="izquierda">⬅️</button>
-                <button class="btn" data-direction="abajo">⬇️</button>
-                <button class="btn" data-direction="derecha">➡️</button>
+            <button class="btn" data-direction="up">⬆️</button>
+            <div class="control-row">
+                <button class="btn" data-direction="left">⬅️</button>
+                <button class="btn" data-direction="down">⬇️</button>
+                <button class="btn" data-direction="right">➡️</button>
             </div>
         </div>
-        <button id="restart">🔄 Reiniciar</button>
     </div>
-    <audio id="eatSound" src="eat.mp3"></audio>
-    <script src="script.js"></script>
+
+    <script>
+        let gameRunning = false;
+        let paused = false;
+
+        function startGame() {
+            document.getElementById('menu').style.display = 'none';
+            document.getElementById('gameContainer').style.display = 'flex';
+            gameRunning = true;
+            paused = false;
+            // Aquí va la inicialización del juego
+        }
+
+        document.addEventListener("keydown", function(event) {
+            if (event.code === "Escape" && gameRunning) {
+                paused = !paused;
+                alert(paused ? "Juego pausado" : "Juego reanudado");
+            }
+            if (event.code === "Space" && gameRunning) {
+                startGame();
+            }
+        });
+    </script>
 </body>
 </html>
