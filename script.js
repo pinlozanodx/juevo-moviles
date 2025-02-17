@@ -4,8 +4,9 @@ const scoreDisplay = document.getElementById("score");
 const highScoreDisplay = document.getElementById("highScore");
 const timerDisplay = document.getElementById("timer");
 const menu = document.getElementById("menu");
-const restartBtn = document.getElementById("restart"); // Asegúrate de tener este elemento
-const eatSound = new Audio('eatSound.mp3'); // Asegúrate de tener el archivo de sonido
+const startBtn = document.getElementById("start");
+const restartBtn = document.getElementById("restart");
+const eatSound = document.getElementById("eatSound");
 
 const box = 20;
 let snake = [{ x: 10 * box, y: 10 * box }];
@@ -20,9 +21,14 @@ let timerInterval;
 let isPaused = false;
 
 document.addEventListener("keydown", handleKeyPress);
+startBtn.addEventListener("click", startGame);
+restartBtn.addEventListener("click", resetGame);
+
+// Control de los botones de la interfaz
 document.querySelectorAll(".btn").forEach(button => {
-    button.addEventListener("click", function() {
-        changeDirection({ key: button.getAttribute("data-direction") });
+    button.addEventListener("click", (event) => {
+        const direction = event.target.dataset.direction;
+        changeDirection(direction);
     });
 });
 
@@ -32,7 +38,7 @@ function handleKeyPress(event) {
     } else if (event.key === "Escape") {
         togglePause();
     } else {
-        changeDirection(event);
+        changeDirection(event.key);
     }
 }
 
@@ -50,12 +56,16 @@ function togglePause() {
     isPaused = !isPaused;
 }
 
-function changeDirection(event) {
-    const key = event.key || event.target.getAttribute("data-direction");
-    if ((key === "ArrowUp" || key === "w") && direction !== "DOWN") nextDirection = "UP";
-    if ((key === "ArrowDown" || key === "s") && direction !== "UP") nextDirection = "DOWN";
-    if ((key === "ArrowLeft" || key === "a") && direction !== "RIGHT") nextDirection = "LEFT";
-    if ((key === "ArrowRight" || key === "d") && direction !== "LEFT") nextDirection = "RIGHT";
+function changeDirection(direction) {
+    if (direction === "ArrowUp" || direction === "w") {
+        if (direction !== "DOWN") nextDirection = "UP";
+    } else if (direction === "ArrowDown" || direction === "s") {
+        if (direction !== "UP") nextDirection = "DOWN";
+    } else if (direction === "ArrowLeft" || direction === "a") {
+        if (direction !== "RIGHT") nextDirection = "LEFT";
+    } else if (direction === "ArrowRight" || direction === "d") {
+        if (direction !== "LEFT") nextDirection = "RIGHT";
+    }
 }
 
 function draw() {
