@@ -32,8 +32,6 @@ document.querySelectorAll(".btn").forEach(button => {
 function handleKeyPress(event) {
     if (event.key === " " && !isPaused) {
         resetGame(); // Reinicia el juego al presionar "Espacio"
-    } else if (event.key === "Escape") {
-        togglePause(); // Pausar al presionar "Escape"
     } else {
         changeDirection(event.key);
     }
@@ -49,17 +47,6 @@ function changeDirection(newDirection) {
         if (direction !== "RIGHT") nextDirection = "LEFT";
     } else if (newDirection === "ArrowRight" || newDirection === "d") {
         if (direction !== "LEFT") nextDirection = "RIGHT";
-    }
-}
-
-// Función para pausar y reanudar el juego
-function togglePause() {
-    if (isPaused) {
-        gameInterval = setInterval(draw, 100); // Reanudar el juego
-        isPaused = false;
-    } else {
-        clearInterval(gameInterval); // Pausar el juego
-        isPaused = true;
     }
 }
 
