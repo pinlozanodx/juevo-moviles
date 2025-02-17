@@ -4,6 +4,7 @@ const scoreDisplay = document.getElementById("score");
 const foodCountDisplay = document.getElementById("foodCount");
 const timerDisplay = document.getElementById("timer");
 const restartBtn = document.getElementById("restart");
+const maxScoreDisplay = document.getElementById("maxScore");
 
 const box = 20;
 let snake = [{ x: 10 * box, y: 10 * box }];
@@ -15,6 +16,7 @@ let gameInterval;
 let timer = 0;
 let timerInterval;
 let gameOver = false;
+let maxScore = 0;
 
 document.addEventListener("keydown", changeDirection);
 restartBtn.addEventListener("click", resetGame);
@@ -32,7 +34,7 @@ function draw() {
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Dibuja la comida
+    // Dibuja la comida (manzana)
     ctx.fillStyle = "red";
     ctx.fillRect(food.x, food.y, box, box);
 
@@ -63,7 +65,11 @@ function draw() {
         clearInterval(timerInterval);
         gameOver = true;
         restartBtn.disabled = false;
-        alert("¡Perdedor!");
+        if (score > maxScore) {
+            maxScore = score;
+            maxScoreDisplay.textContent = maxScore;
+        }
+        alert("¡Perdedor xd!");
         return;
     }
 
