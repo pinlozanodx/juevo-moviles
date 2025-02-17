@@ -4,9 +4,8 @@ const scoreDisplay = document.getElementById("score");
 const highScoreDisplay = document.getElementById("highScore");
 const timerDisplay = document.getElementById("timer");
 const menu = document.getElementById("menu");
-const startBtn = document.getElementById("start");
-const restartBtn = document.getElementById("restart");
-const eatSound = document.getElementById("eatSound");
+const startBtn = document.getElementById("startBtn");
+const restartBtn = document.getElementById("restartBtn");
 
 const box = 20;
 let snake = [{ x: 10 * box, y: 10 * box }];
@@ -20,11 +19,10 @@ let timer = 0;
 let timerInterval;
 let isPaused = false;
 
-document.addEventListener("keydown", handleKeyPress);
 startBtn.addEventListener("click", startGame);
 restartBtn.addEventListener("click", resetGame);
+document.addEventListener("keydown", handleKeyPress);
 
-// Control de los botones de la interfaz
 document.querySelectorAll(".btn").forEach(button => {
     button.addEventListener("click", (event) => {
         const direction = event.target.dataset.direction;
@@ -93,7 +91,6 @@ function draw() {
     if (direction === "RIGHT") newHead.x += box;
 
     if (newHead.x === food.x && newHead.y === food.y) {
-        eatSound.play();
         score++;
         food = getRandomFoodPosition();
     } else {
@@ -103,7 +100,7 @@ function draw() {
     if (isCollision(newHead)) {
         clearInterval(gameInterval);
         clearInterval(timerInterval);
-        alert("¡Game Over! 🐍");
+        alert("¡Game Over!");
         restartBtn.style.display = "block";
         return;
     }
@@ -133,6 +130,7 @@ function getRandomFoodPosition() {
 
 function startGame() {
     menu.style.display = "none";
+    document.querySelector(".game-container").style.display = "flex";
     restartBtn.style.display = "none";
     score = 0;
     snake = [{ x: 10 * box, y: 10 * box }];
@@ -153,5 +151,6 @@ function resetGame() {
     clearInterval(gameInterval);
     clearInterval(timerInterval);
     menu.style.display = "block";
+    document.querySelector(".game-container").style.display = "none";
     restartBtn.style.display = "none";
 }
