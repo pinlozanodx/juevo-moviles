@@ -1,107 +1,143 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
-const foodCountDisplay = document.getElementById("foodCount");
-const timerDisplay = document.getElementById("timer");
-const restartBtn = document.getElementById("restart");
-const maxScoreDisplay = document.getElementById("maxScore");
+const box = 20; // Tamaño de cada bloque
+const canvasSize = 30; // 30x30 celdas
 
-const box = 20;
 let snake = [{ x: 10 * box, y: 10 * box }];
-let direction = "RIGHT";
-let food = { x: Math.floor(Math.random() * 30) * box, y: Math.floor(Math.random() * 30) * box };
+let food = { x: Math.floor(Math.random() * canvasSize) * box, y: Math.floor(Math.random() * canvasSize) * box };
 let score = 0;
-let foodCount = 0;
+let highScore = localStorage.getItem("high-score") || 0;
+let obstacles = [];
+let direction = "RIGHT";
 let gameInterval;
-let timer = 0;
-let timerInterval;
-let gameOver = false;
-let maxScore = 0;
 
-document.addEventListener("keydown", changeDirection);
-restartBtn.addEventListener("click", resetGame);
+let gameSpeed = 100; // velocidad inicial
 
-function changeDirection(event) {
-    if (gameOver) return;
-    const key = event.key;
-    if (key === "ArrowUp" && direction !== "DOWN") direction = "UP";
-    if (key === "ArrowDown" && direction !== "UP") direction = "DOWN";
-    if (key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
-    if (key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
+// Generación aleatoria de obstáculos
+function generateObstacles() {
+    obstacles = [];
+    for (let i = 0; i < 5; i++) {
+        obstacles.push({
+            x: Math.floor(Math.random() * canvasSize) * box,
+            y: Math.floor(Math.random() * canvasSize) * box
+        });
+    }
 }
 
-function draw() {
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+// Dibuja los obstáculos
+function drawObstacles() {
+    ctx.fillStyle = "brown";
+    obstacles.forEach(obstacle => {
+        ctx.fillRect(obstacle.x, obstacle.y, box, box);
+    });
+}
 
-    // Dibuja la comida (manzana)
+// Comprobar colisión con obstáculos
+function isCollisionWithObstacles() {
+    for (let i = 0; i < obstacles.length; i++) {
+        if (snake[0].x === obstacles[i].x && snake[0].y === obstacles[i].y) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Dibujar la serpiente
+function drawSnake() {
+    for (let i = 0; i < snake.length; i++) {
+        ctx.fillStyle = i === 0 ? "green" : "lime"; // La cabeza es de color verde
+        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+    }
+}
+
+// Dibujar la comida
+function drawFood() {
     ctx.fillStyle = "red";
     ctx.fillRect(food.x, food.y, box, box);
+}
 
-    // Dibuja la serpiente
-    snake.forEach((segment, index) => {
-        ctx.fillStyle = index === 0 ? "green" : "lime";
-        ctx.fillRect(segment.x, segment.y, box, box);
-    });
+// Actualizar el puntaje
+function updateScore() {
+    document.getElementById("score").textContent = score;
+    document.getElementById("high-score").textContent = highScore;
+    if (score > highScore) {
+        highScore = score;
+        localStorage.setItem("high-score", highScore);
+    }
+}
 
-    let newHead = { x: snake[0].x, y: snake[0].y };
+// Mover la serpiente
+function moveSnake() {
+    let head = { ...snake[0] };
+    
+    if (direction === "LEFT") head.x -= box;
+    if (direction === "RIGHT") head.x += box;
+    if (direction === "UP") head.y -= box;
+    if (direction === "DOWN") head.y += box;
 
-    if (direction === "UP") newHead.y -= box;
-    if (direction === "DOWN") newHead.y += box;
-    if (direction === "LEFT") newHead.x -= box;
-    if (direction === "RIGHT") newHead.x += box;
+    snake.unshift(head); // Añadir la cabeza
 
-    if (newHead.x === food.x && newHead.y === food.y) {
-        foodCount++;
+    // Verifica si come la comida
+    if (head.x === food.x && head.y === food.y) {
         score++;
-        foodCountDisplay.textContent = foodCount;
-        food = { x: Math.floor(Math.random() * 30) * box, y: Math.floor(Math.random() * 30) * box };
+        generateFood();
     } else {
-        snake.pop();
+        snake.pop(); // Eliminar la última parte de la serpiente
     }
 
-    if (isCollision(newHead) || newHead.x < 0 || newHead.y < 0 || newHead.x >= canvas.width || newHead.y >= canvas.height) {
+    // Verifica las colisiones
+    if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height || isCollisionWithObstacles()) {
         clearInterval(gameInterval);
-        clearInterval(timerInterval);
-        gameOver = true;
-        restartBtn.disabled = false;
-        if (score > maxScore) {
-            maxScore = score;
-            maxScoreDisplay.textContent = maxScore;
-        }
-        alert("¡Game Over! 🐍");
-        return;
+        alert("Game Over!");
+        updateScore();
+        restartGame();
     }
-
-    snake.unshift(newHead);
 }
 
-function isCollision(head) {
-    return snake.some((segment, index) => index !== 0 && segment.x === head.x && segment.y === head.y);
+// Generar comida aleatoria
+function generateFood() {
+    food = {
+        x: Math.floor(Math.random() * canvasSize) * box,
+        y: Math.floor(Math.random() * canvasSize) * box
+    };
 }
 
-function startGame() {
-    score = 0;
-    foodCount = 0;
+// Dibujar el juego
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawSnake();
+    drawFood();
+    drawObstacles();
+    moveSnake();
+    updateScore();
+}
+
+// Cambiar dirección
+document.addEventListener("keydown", function (e) {
+    if (e.keyCode === 37 && direction !== "RIGHT") direction = "LEFT";
+    if (e.keyCode === 38 && direction !== "DOWN") direction = "UP";
+    if (e.keyCode === 39 && direction !== "LEFT") direction = "RIGHT";
+    if (e.keyCode === 40 && direction !== "UP") direction = "DOWN";
+});
+
+// Reiniciar el juego
+function restartGame() {
     snake = [{ x: 10 * box, y: 10 * box }];
+    score = 0;
+    generateObstacles();
     direction = "RIGHT";
-    food = { x: Math.floor(Math.random() * 30) * box, y: Math.floor(Math.random() * 30) * box };
-    timer = 0;
-    gameOver = false;
-    restartBtn.disabled = true;
-    foodCountDisplay.textContent = foodCount;
-    maxScoreDisplay.textContent = maxScore;
-    timerDisplay.textContent = timer;
-    gameInterval = setInterval(draw, 100);
-    timerInterval = setInterval(() => {
-        timer++;
-        timerDisplay.textContent = timer;
-    }, 1000);
-}
-
-function resetGame() {
+    gameSpeed = 100;
+    generateFood();
     clearInterval(gameInterval);
-    clearInterval(timerInterval);
-    startGame();
+    gameInterval = setInterval(draw, gameSpeed);
 }
 
-startGame();
+// Cambiar tema visual
+function toggleTheme() {
+    document.body.classList.toggle("neon");
+}
+
+// Iniciar el juego
+generateObstacles();
+generateFood();
+gameInterval = setInterval(draw, gameSpeed);
