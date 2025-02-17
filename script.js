@@ -6,6 +6,7 @@ const canvasSize = 30; // 30x30 celdas
 let snake = [{ x: 10 * box, y: 10 * box }];
 let food = { x: Math.floor(Math.random() * canvasSize) * box, y: Math.floor(Math.random() * canvasSize) * box };
 let score = 0;
+let fruitScore = 0; // Puntaje por manzana
 let highScore = localStorage.getItem("high-score") || 0;
 let obstacles = [];
 let direction = "RIGHT";
@@ -17,7 +18,7 @@ let backgroundColor = "#333"; // color inicial del fondo
 // Generación aleatoria de obstáculos
 function generateObstacles() {
     obstacles = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < score + 5; i++) { // Aumenta el número de obstáculos por manzana comida
         obstacles.push({
             x: Math.floor(Math.random() * canvasSize) * box,
             y: Math.floor(Math.random() * canvasSize) * box
@@ -27,7 +28,7 @@ function generateObstacles() {
 
 // Dibuja los obstáculos
 function drawObstacles() {
-    ctx.fillStyle = "brown";
+    ctx.fillStyle = "blue"; // Obstáculos color azul
     obstacles.forEach(obstacle => {
         ctx.fillRect(obstacle.x, obstacle.y, box, box);
     });
@@ -60,6 +61,7 @@ function drawFood() {
 // Actualizar el puntaje
 function updateScore() {
     document.getElementById("score").textContent = score;
+    document.getElementById("fruit-score").textContent = fruitScore;
     document.getElementById("high-score").textContent = highScore;
     if (score > highScore) {
         highScore = score;
@@ -81,9 +83,10 @@ function moveSnake() {
     // Verifica si come la comida
     if (head.x === food.x && head.y === food.y) {
         score++;
+        fruitScore++; // Aumenta el puntaje por manzana
         generateFood();
-        generateObstacles();
-        changeBackgroundColor();
+        generateObstacles(); // Genera obstáculos adicionales
+        changeBackgroundColor(); // Cambia el color de fondo
     } else {
         snake.pop(); // Eliminar la última parte de la serpiente
     }
@@ -107,7 +110,7 @@ function generateFood() {
 
 // Cambiar el color del fondo del tablero cada vez que se come la manzana
 function changeBackgroundColor() {
-    const colors = ["#333", "#444", "#555", "#666", "#777"];
+    const colors = ["#333", "#444", "#555", "#666", "#777", "#888"];
     backgroundColor = colors[Math.floor(Math.random() * colors.length)];
     canvas.style.backgroundColor = backgroundColor;
 }
@@ -134,6 +137,7 @@ document.addEventListener("keydown", function (e) {
 function restartGame() {
     snake = [{ x: 10 * box, y: 10 * box }];
     score = 0;
+    fruitScore = 0; // Reinicia el puntaje por manzana
     generateObstacles();
     direction = "RIGHT";
     gameSpeed = 100;
