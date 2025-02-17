@@ -5,13 +5,13 @@
 }
 
 body {
-    background-color: #000000;  /* Fondo de la página negro */
+    background-color: #1b1b1b;  /* Fondo de la página negro oscuro */
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     color: white;
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
 }
 
 .game-container {
@@ -20,36 +20,48 @@ body {
     align-items: center;
     border: 5px solid white;
     padding: 20px;
-    background-color: #333;  /* Fondo más oscuro para el contenedor */
+    background-color: #333;  /* Fondo del contenedor oscuro */
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
 }
 
 canvas {
     border: 5px solid white;
-    background-color: #000000;
+    background-color: #000;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
 }
 
 .scoreboard {
     margin-bottom: 20px;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: bold;
     display: flex;
-    justify-content: space-around;
-    width: 300px;
+    flex-direction: column;
+    align-items: center;
+}
+
+.scoreboard div {
+    margin: 10px 0;
 }
 
 button {
-    font-size: 18px;
-    padding: 10px;
+    font-size: 24px;
+    padding: 15px 30px;
     background-color: #444;
     color: white;
     border: none;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 10px;
     margin-top: 20px;
+    width: 250px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.8);
 }
 
 button:hover {
     background-color: #666;
+    transform: scale(1.1);
 }
 
 button:disabled {
