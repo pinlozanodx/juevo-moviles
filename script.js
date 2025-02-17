@@ -143,5 +143,3 @@ function resetGame() {
     menu.style.display = "block";
     restartBtn.style.display = "none";
 }
-
-}
