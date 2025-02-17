@@ -1,49 +1,68 @@
 body {
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     height: 100vh;
-    margin: 0;
-    background-color: #222;
+    background-color: #282c34;
     color: white;
     font-family: Arial, sans-serif;
-}
-
-.menu {
     text-align: center;
 }
 
 .game-container {
-    display: none;
+    display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 50px; /* Desplazar el juego hacia abajo */
+    gap: 10px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 600px;
+    font-size: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 10px;
 }
 
 canvas {
-    border: 2px solid white;
-    background-color: #000;
+    background-color: black;
+    border: 5px solid white;
 }
 
 .controls {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    margin-top: 10px;
 }
 
-.control-row {
-    display: flex;
-    gap: 10px;
-}
-
-button {
-    padding: 10px;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-#scoreDisplay {
+.controls button {
     font-size: 24px;
+    padding: 10px;
+    margin: 5px;
+    background: #4CAF50;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.controls div {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+#restart {
+    font-size: 18px;
+    padding: 10px;
+    margin-top: 10px;
+    background: #f44336;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
 }
