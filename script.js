@@ -1,24 +1,23 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
-const box = 20; // Tamaño de cada bloque
-const canvasSize = 30; // 30x30 celdas
+const box = 20; 
+const canvasSize = 30; 
 
 let snake = [{ x: 10 * box, y: 10 * box }];
 let food = { x: Math.floor(Math.random() * canvasSize) * box, y: Math.floor(Math.random() * canvasSize) * box };
 let score = 0;
-let fruitScore = 0; // Puntaje por manzana
+let fruitScore = 0; 
 let highScore = localStorage.getItem("high-score") || 0;
 let obstacles = [];
 let direction = "RIGHT";
 let gameInterval;
 
-let gameSpeed = 100; // velocidad inicial
-let backgroundColor = "#333"; // color inicial del fondo
+let gameSpeed = 100; 
+let backgroundColor = "#333"; 
 
-// Generación aleatoria de obstáculos
 function generateObstacles() {
     obstacles = [];
-    for (let i = 0; i < score + 5; i++) { // Aumenta el número de obstáculos por manzana comida
+    for (let i = 0; i < score + 5; i++) { 
         obstacles.push({
             x: Math.floor(Math.random() * canvasSize) * box,
             y: Math.floor(Math.random() * canvasSize) * box
@@ -26,15 +25,15 @@ function generateObstacles() {
     }
 }
 
-// Dibuja los obstáculos
+
 function drawObstacles() {
-    ctx.fillStyle = "blue"; // Obstáculos color azul
+    ctx.fillStyle = "blue"; 
     obstacles.forEach(obstacle => {
         ctx.fillRect(obstacle.x, obstacle.y, box, box);
     });
 }
 
-// Comprobar colisión con obstáculos
+
 function isCollisionWithObstacles() {
     for (let i = 0; i < obstacles.length; i++) {
         if (snake[0].x === obstacles[i].x && snake[0].y === obstacles[i].y) {
@@ -44,21 +43,20 @@ function isCollisionWithObstacles() {
     return false;
 }
 
-// Dibujar la serpiente
+
 function drawSnake() {
     for (let i = 0; i < snake.length; i++) {
-        ctx.fillStyle = i === 0 ? "green" : "lime"; // La cabeza es de color verde
+        ctx.fillStyle = i === 0 ? "green" : "lime"; 
         ctx.fillRect(snake[i].x, snake[i].y, box, box);
     }
 }
 
-// Dibujar la comida
+
 function drawFood() {
     ctx.fillStyle = "red";
     ctx.fillRect(food.x, food.y, box, box);
 }
 
-// Actualizar el puntaje
 function updateScore() {
     document.getElementById("score").textContent = score;
     document.getElementById("fruit-score").textContent = fruitScore;
@@ -69,7 +67,6 @@ function updateScore() {
     }
 }
 
-// Mover la serpiente
 function moveSnake() {
     let head = { ...snake[0] };
     
@@ -78,23 +75,23 @@ function moveSnake() {
     if (direction === "UP") head.y -= box;
     if (direction === "DOWN") head.y += box;
 
-    snake.unshift(head); // Añadir la cabeza
+    snake.unshift(head); 
 
-    // Verifica si come la comida
+    
     if (head.x === food.x && head.y === food.y) {
         score++;
-        fruitScore++; // Aumenta el puntaje por manzana
+        fruitScore++; 
         generateFood();
-        generateObstacles(); // Genera obstáculos adicionales
-        changeBackgroundColor(); // Cambia el color de fondo
-        if (score % 5 === 0) {
-            increaseGameSpeed(); // Aumenta la velocidad cada 5 manzanas
+        generateObstacles(); 
+        changeBackgroundColor(); 
+        if (score % 3 === 0) {
+            increaseGameSpeed(); 
         }
     } else {
-        snake.pop(); // Eliminar la última parte de la serpiente
+        snake.pop(); 
     }
 
-    // Verifica las colisiones
+    
     if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height || isCollisionWithObstacles()) {
         clearInterval(gameInterval);
         alert("Game Over!");
@@ -103,7 +100,7 @@ function moveSnake() {
     }
 }
 
-// Generar comida aleatoria
+
 function generateFood() {
     food = {
         x: Math.floor(Math.random() * canvasSize) * box,
@@ -111,21 +108,21 @@ function generateFood() {
     };
 }
 
-// Cambiar el color del fondo del tablero cada vez que se come la manzana
+
 function changeBackgroundColor() {
-    const colors = ["#333", "#444", "#555", "#666", "#777", "#888"];
+    const colors = ["#333", "#444", "#555", "#666", "#777", "#888", "#462", "#999", "#891"];
     backgroundColor = colors[Math.floor(Math.random() * colors.length)];
     canvas.style.backgroundColor = backgroundColor;
 }
 
-// Aumentar la velocidad del juego en un 5%
+
 function increaseGameSpeed() {
-    gameSpeed = Math.max(50, gameSpeed * 0.95); // Aumenta la velocidad pero no baja de 50ms
+    gameSpeed = Math.max(50, gameSpeed * 0.95); 
     clearInterval(gameInterval);
     gameInterval = setInterval(draw, gameSpeed);
 }
 
-// Dibujar el juego
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawSnake();
@@ -135,7 +132,7 @@ function draw() {
     updateScore();
 }
 
-// Cambiar dirección
+
 document.addEventListener("keydown", function (e) {
     if (e.keyCode === 37 && direction !== "RIGHT") direction = "LEFT";
     if (e.keyCode === 38 && direction !== "DOWN") direction = "UP";
@@ -143,27 +140,27 @@ document.addEventListener("keydown", function (e) {
     if (e.keyCode === 40 && direction !== "UP") direction = "DOWN";
 });
 
-// Reiniciar el juego
+
 function restartGame() {
     snake = [{ x: 10 * box, y: 10 * box }];
     score = 0;
-    fruitScore = 0; // Reinicia el puntaje por manzana
+    fruitScore = 0; 
     generateObstacles();
     direction = "RIGHT";
     gameSpeed = 100;
-    backgroundColor = "#333"; // reiniciar color de fondo
+    backgroundColor = "#333";
     generateFood();
     canvas.style.backgroundColor = backgroundColor;
     clearInterval(gameInterval);
     gameInterval = setInterval(draw, gameSpeed);
 }
 
-// Cambiar tema visual
+
 function toggleTheme() {
     document.body.classList.toggle("neon");
 }
 
-// Iniciar el juego
+
 generateObstacles();
 generateFood();
 gameInterval = setInterval(draw, gameSpeed);
