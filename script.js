@@ -13,7 +13,7 @@ let nextDirection = "RIGHT"; // Siguiente dirección a la que debe moverse
 let food = getRandomFoodPosition(); // Comida
 let score = 0; // Puntaje
 let gameInterval;
-let timer = 0; // Temporizador
+let isPaused = false;
 
 // Botones y eventos
 startBtn.addEventListener("click", startGame);
@@ -30,7 +30,7 @@ document.querySelectorAll(".btn").forEach(button => {
 
 // Función que maneja las teclas de dirección
 function handleKeyPress(event) {
-    if (event.key === " ") {
+    if (event.key === " " && !isPaused) {
         resetGame(); // Reinicia el juego al presionar "Espacio"
     } else if (event.key === "Escape") {
         togglePause(); // Pausar al presionar "Escape"
@@ -54,10 +54,12 @@ function changeDirection(newDirection) {
 
 // Función para pausar y reanudar el juego
 function togglePause() {
-    if (gameInterval) {
-        clearInterval(gameInterval);
-    } else {
+    if (isPaused) {
         gameInterval = setInterval(draw, 100); // Reanudar el juego
+        isPaused = false;
+    } else {
+        clearInterval(gameInterval); // Pausar el juego
+        isPaused = true;
     }
 }
 
@@ -72,6 +74,7 @@ function draw() {
     ctx.fill();
 
     // Mueve la serpiente
+    direction = nextDirection; // Actualizar la dirección
     let newHead = { x: snake[0].x, y: snake[0].y };
 
     if (direction === "UP") newHead.y -= box;
