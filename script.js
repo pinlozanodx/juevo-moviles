@@ -63,9 +63,10 @@ function draw() {
         eatSound.play();
         score++;
         food = { x: Math.floor(Math.random() * (canvas.width / box)) * box, y: Math.floor(Math.random() * (canvas.height / box)) * box };
-        snake.push({ x: snake[snake.length - 1].x, y: snake[snake.length - 1].y }); // Agregar segmento a la serpiente
+        snake.unshift(newHead); // El primer segmento (cabeza) se agrega nuevamente en la cabeza
     } else {
-        snake.pop();
+        snake.unshift(newHead); // Mueve la serpiente
+        snake.pop(); // Elimina la última parte de la serpiente para simular movimiento
     }
 
     if (isCollision(newHead) || newHead.x < 0 || newHead.y < 0 || newHead.x >= canvas.width || newHead.y >= canvas.height) {
@@ -75,7 +76,6 @@ function draw() {
         return;
     }
 
-    snake.unshift(newHead);
     scoreDisplay.textContent = score;
 
     if (score > highScore) {
