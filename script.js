@@ -17,7 +17,7 @@ let timer = 0;
 let timerInterval;
 let nextDirection = direction;
 
-document.addEventListener("keydown", changeDirection);
+document.addEventListener("keydown", handleKeyPress);
 document.querySelectorAll(".btn").forEach(button => {
     button.addEventListener("click", () => changeDirection({ key: getKeyFromDirection(button.dataset.direction) }));
 });
@@ -30,6 +30,14 @@ function getKeyFromDirection(direction) {
         left: "ArrowLeft",
         right: "ArrowRight"
     }[direction];
+}
+
+function handleKeyPress(event) {
+    if (event.key === " ") {
+        resetGame();
+    } else {
+        changeDirection(event);
+    }
 }
 
 function changeDirection(event) {
@@ -74,7 +82,7 @@ function draw() {
     if (isCollision(newHead) || newHead.x < 0 || newHead.y < 0 || newHead.x >= canvas.width || newHead.y >= canvas.height) {
         clearInterval(gameInterval);
         clearInterval(timerInterval);
-        alert("¡Perdiste, womp womp womp!");
+        alert("¡Game Over! 🐍");
         return;
     }
 
