@@ -1,70 +1,60 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 
 body {
-    background-color: #1b1b1b;  /* Fondo de la página negro oscuro */
+    background-color: #111;
+    color: white;
+    font-family: 'Arial', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    color: white;
-    font-family: 'Arial', sans-serif;
-}
-
-.game-container {
-    display: flex;
     flex-direction: column;
-    align-items: center;
-    border: 5px solid white;
-    padding: 20px;
-    background-color: #333;  /* Fondo del contenedor oscuro */
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
+    height: 100vh;
+    margin: 0;
 }
 
-canvas {
-    border: 5px solid white;
-    background-color: #000;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+#gameCanvas {
+    background-color: #333;
+    border: 5px solid #555;
 }
 
 .scoreboard {
-    margin-bottom: 20px;
     font-size: 20px;
-    font-weight: bold;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.scoreboard div {
-    margin: 10px 0;
+    margin-bottom: 20px;
 }
 
 button {
-    font-size: 24px;
-    padding: 15px 30px;
     background-color: #444;
     color: white;
     border: none;
+    padding: 10px 20px;
     cursor: pointer;
-    border-radius: 10px;
-    margin-top: 20px;
-    width: 250px;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.8);
+    margin: 10px;
+    font-size: 16px;
+    border-radius: 5px;
 }
 
 button:hover {
-    background-color: #666;
-    transform: scale(1.1);
+    background-color: #555;
 }
 
-button:disabled {
-    background-color: #888;
-    cursor: not-allowed;
+/* Tema Neón */
+body.neon {
+    background-color: #0a0a0a;
+}
+
+body.neon #gameCanvas {
+    background-color: #222;
+    border: 5px solid #0ff;
+}
+
+body.neon .scoreboard {
+    color: #00ff00;
+}
+
+body.neon button {
+    background-color: #0f0;
+    color: black;
+}
+
+body.neon button:hover {
+    background-color: #00ff00;
 }
