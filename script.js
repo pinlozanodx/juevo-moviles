@@ -87,6 +87,9 @@ function moveSnake() {
         generateFood();
         generateObstacles(); // Genera obstáculos adicionales
         changeBackgroundColor(); // Cambia el color de fondo
+        if (score % 5 === 0) {
+            increaseGameSpeed(); // Aumenta la velocidad cada 5 manzanas
+        }
     } else {
         snake.pop(); // Eliminar la última parte de la serpiente
     }
@@ -113,6 +116,13 @@ function changeBackgroundColor() {
     const colors = ["#333", "#444", "#555", "#666", "#777", "#888"];
     backgroundColor = colors[Math.floor(Math.random() * colors.length)];
     canvas.style.backgroundColor = backgroundColor;
+}
+
+// Aumentar la velocidad del juego en un 5%
+function increaseGameSpeed() {
+    gameSpeed = Math.max(50, gameSpeed * 0.95); // Aumenta la velocidad pero no baja de 50ms
+    clearInterval(gameInterval);
+    gameInterval = setInterval(draw, gameSpeed);
 }
 
 // Dibujar el juego
