@@ -12,7 +12,7 @@ const box = 20;
 let snake = [{ x: 10 * box, y: 10 * box }];
 let direction = "RIGHT";
 let nextDirection = "RIGHT";
-let food = { x: Math.floor(Math.random() * 30) * box, y: Math.floor(Math.random() * 30) * box };
+let food = getRandomFoodPosition();
 let score = 0;
 let highScore = 0;
 let gameInterval;
@@ -83,16 +83,16 @@ function draw() {
     if (newHead.x === food.x && newHead.y === food.y) {
         eatSound.play();
         score++;
-        food = { x: Math.floor(Math.random() * 30) * box, y: Math.floor(Math.random() * 30) * box };
+        food = getRandomFoodPosition();
     } else {
         snake.pop();
     }
 
-    if (isCollision(newHead) || newHead.x < 0 || newHead.y < 0 || newHead.x >= canvas.width || newHead.y >= canvas.height) {
+    if (isCollision(newHead)) {
         clearInterval(gameInterval);
         clearInterval(timerInterval);
         alert("¡Game Over! 🐍");
-        restartBtn.style.display = "block"; // Muestra el botón de reinicio
+        restartBtn.style.display = "block";
         return;
     }
 
@@ -105,17 +105,28 @@ function draw() {
 }
 
 function isCollision(head) {
-    return snake.some((segment, index) => index !== 0 && segment.x === head.x && segment.y === head.y);
+    return (
+        head.x < 0 || head.y < 0 || head.x >= canvas.width || head.y >= canvas.height ||
+        snake.some((segment, index) => index !== 0 && segment.x === head.x && segment.y === head.y)
+    );
+}
+
+function getRandomFoodPosition() {
+    let newFood;
+    do {
+        newFood = { x: Math.floor(Math.random() * 30) * box, y: Math.floor(Math.random() * 30) * box };
+    } while (snake.some(segment => segment.x === newFood.x && segment.y === newFood.y));
+    return newFood;
 }
 
 function startGame() {
     menu.style.display = "none";
-    restartBtn.style.display = "none"; // Oculta el botón de reinicio
+    restartBtn.style.display = "none";
     score = 0;
     snake = [{ x: 10 * box, y: 10 * box }];
     direction = "RIGHT";
     nextDirection = "RIGHT";
-    food = { x: Math.floor(Math.random() * 30) * box, y: Math.floor(Math.random() * 30) * box };
+    food = getRandomFoodPosition();
     timer = 0;
     timerDisplay.textContent = 0;
     isPaused = false;
@@ -130,11 +141,7 @@ function resetGame() {
     clearInterval(gameInterval);
     clearInterval(timerInterval);
     menu.style.display = "block";
-    restartBtn.style.display = "none"; // Oculta el botón de reinicio
+    restartBtn.style.display = "none";
 }
 
-function resetGame() {
-    clearInterval(gameInterval);
-    clearInterval(timerInterval);
-    menu.style.display = "block";
 }
