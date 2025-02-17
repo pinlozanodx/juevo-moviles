@@ -15,6 +15,7 @@ let highScore = 0;
 let gameInterval;
 let timer = 0;
 let timerInterval;
+let nextDirection = direction;
 
 document.addEventListener("keydown", changeDirection);
 document.querySelectorAll(".btn").forEach(button => {
@@ -33,27 +34,30 @@ function getKeyFromDirection(direction) {
 
 function changeDirection(event) {
     const key = event.key;
-    if (key === "ArrowUp" && direction !== "DOWN") direction = "UP";
-    if (key === "ArrowDown" && direction !== "UP") direction = "DOWN";
-    if (key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
-    if (key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
+    if (key === "ArrowUp" && direction !== "DOWN") nextDirection = "UP";
+    if (key === "ArrowDown" && direction !== "UP") nextDirection = "DOWN";
+    if (key === "ArrowLeft" && direction !== "RIGHT") nextDirection = "LEFT";
+    if (key === "ArrowRight" && direction !== "LEFT") nextDirection = "RIGHT";
 }
 
 function draw() {
+    direction = nextDirection;
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.fillStyle = "red";
-    ctx.fillRect(food.x, food.y, box, box);
+    ctx.beginPath();
+    ctx.arc(food.x + box / 2, food.y + box / 2, box / 2, 0, Math.PI * 2);
+    ctx.fill();
 
-    ctx.fillStyle = "lime";
     snake.forEach((segment, index) => {
         ctx.fillStyle = index === 0 ? "green" : "lime";
-        ctx.fillRect(segment.x, segment.y, box, box);
+        ctx.beginPath();
+        ctx.arc(segment.x + box / 2, segment.y + box / 2, box / 2, 0, Math.PI * 2);
+        ctx.fill();
     });
 
     let newHead = { x: snake[0].x, y: snake[0].y };
-
     if (direction === "UP") newHead.y -= box;
     if (direction === "DOWN") newHead.y += box;
     if (direction === "LEFT") newHead.x -= box;
@@ -70,13 +74,12 @@ function draw() {
     if (isCollision(newHead) || newHead.x < 0 || newHead.y < 0 || newHead.x >= canvas.width || newHead.y >= canvas.height) {
         clearInterval(gameInterval);
         clearInterval(timerInterval);
-        alert("¡Game Over! 🐍");
+        alert("¡Perdiste, womp womp womp!");
         return;
     }
 
     snake.unshift(newHead);
     scoreDisplay.textContent = score;
-
     if (score > highScore) {
         highScore = score;
         highScoreDisplay.textContent = highScore;
@@ -91,6 +94,7 @@ function startGame() {
     score = 0;
     snake = [{ x: 10 * box, y: 10 * box }];
     direction = "RIGHT";
+    nextDirection = "RIGHT";
     food = { x: Math.floor(Math.random() * 30) * box, y: Math.floor(Math.random() * 30) * box };
     timer = 0;
     timerDisplay.textContent = 0;
