@@ -52,6 +52,7 @@ function draw() {
         ctx.fillRect(segment.x, segment.y, box, box);
     });
 
+    // Genera la nueva posición de la cabeza
     let newHead = { x: snake[0].x, y: snake[0].y };
 
     if (direction === "UP") newHead.y -= box;
@@ -59,25 +60,28 @@ function draw() {
     if (direction === "LEFT") newHead.x -= box;
     if (direction === "RIGHT") newHead.x += box;
 
+    // Verifica si la serpiente ha comido la manzana
     if (newHead.x === food.x && newHead.y === food.y) {
         eatSound.play();
         score++;
         food = { x: Math.floor(Math.random() * (canvas.width / box)) * box, y: Math.floor(Math.random() * (canvas.height / box)) * box };
-        snake.unshift(newHead); // El primer segmento (cabeza) se agrega nuevamente en la cabeza
+        snake.unshift(newHead); // La serpiente crece al añadir un nuevo segmento al inicio
     } else {
-        snake.unshift(newHead); // Mueve la serpiente
-        snake.pop(); // Elimina la última parte de la serpiente para simular movimiento
+        snake.unshift(newHead); // La serpiente avanza
+        snake.pop(); // Elimina el último segmento para simular el movimiento
     }
 
-    if (isCollision(newHead) || newHead.x < 0 || newHead.y < 0 || newHead.x >= canvas.width || newHead.y >= canvas.height) {
+    // Verifica colisiones con los bordes o con la propia serpiente
+    if (isCollision(newHead)) {
         clearInterval(gameInterval);
         clearInterval(timerInterval);
-        alert("¡Game Over! 🐍");
+        alert("¡Perdedor lol! ");
         return;
     }
 
     scoreDisplay.textContent = score;
 
+    // Actualiza el puntaje más alto
     if (score > highScore) {
         highScore = score;
         highScoreDisplay.textContent = highScore;
@@ -85,7 +89,13 @@ function draw() {
 }
 
 function isCollision(head) {
-    return snake.some((segment, index) => index !== 0 && segment.x === head.x && segment.y === head.y);
+    return (
+        head.x < 0 ||
+        head.y < 0 ||
+        head.x >= canvas.width ||
+        head.y >= canvas.height ||
+        snake.some((segment, index) => index !== 0 && segment.x === head.x && segment.y === head.y)
+    );
 }
 
 function startGame() {
