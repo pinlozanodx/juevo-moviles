@@ -1,6 +1,5 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
-const scoreDisplay = document.getElementById("score");
 const foodCountDisplay = document.getElementById("foodCount");
 const timerDisplay = document.getElementById("timer");
 const restartBtn = document.getElementById("restart");
@@ -69,15 +68,11 @@ function draw() {
             maxScore = score;
             maxScoreDisplay.textContent = maxScore;
         }
-        alert("¡Perdedor xd!");
+        alert("¡Game Over! 🐍");
         return;
     }
 
     snake.unshift(newHead);
-    scoreDisplay.textContent = score;
-
-    // Actualiza el temporizador
-    timerDisplay.textContent = timer;
 }
 
 function isCollision(head) {
@@ -94,11 +89,12 @@ function startGame() {
     gameOver = false;
     restartBtn.disabled = true;
     foodCountDisplay.textContent = foodCount;
-    scoreDisplay.textContent = score;
+    maxScoreDisplay.textContent = maxScore;
     timerDisplay.textContent = timer;
     gameInterval = setInterval(draw, 100);
     timerInterval = setInterval(() => {
         timer++;
+        timerDisplay.textContent = timer;
     }, 1000);
 }
 
