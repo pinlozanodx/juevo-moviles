@@ -4,18 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Juego de la Serpiente</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="game-container">
-        <div class="scoreboard">
-            <div>🍎 Manzanas: <span id="foodCount">0</span></div>
-            <div>🏆 Puntaje máximo: <span id="maxScore">0</span></div>
-            <div>⏳ Tiempo: <span id="timer">0</span> s</div>
-        </div>
-        <canvas id="gameCanvas" width="600" height="600"></canvas>
-        <button id="restart" class="btn">Reiniciar Juego</button>
+    <div class="scoreboard">
+        <p>Puntaje: <span id="score">0</span></p>
+        <p>Puntaje Máximo: <span id="high-score">0</span></p>
+        <button id="restart-btn" onclick="restartGame()">Reiniciar</button>
+        <button id="theme-toggle-btn" onclick="toggleTheme()">Cambiar Tema</button>
     </div>
+    <canvas id="gameCanvas" width="600" height="600"></canvas>
     <script src="script.js"></script>
 </body>
 </html>
