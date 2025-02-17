@@ -9,7 +9,7 @@ const eatSound = document.getElementById("eatSound");
 const box = 20;
 let snake = [{ x: 10 * box, y: 10 * box }];
 let direction = "RIGHT";
-let food = { x: Math.floor(Math.random() * 30) * box, y: Math.floor(Math.random() * 30) * box };
+let food = { x: Math.floor(Math.random() * (canvas.width / box)) * box, y: Math.floor(Math.random() * (canvas.height / box)) * box };
 let score = 0;
 let highScore = 0;
 let gameInterval;
@@ -62,7 +62,8 @@ function draw() {
     if (newHead.x === food.x && newHead.y === food.y) {
         eatSound.play();
         score++;
-        food = { x: Math.floor(Math.random() * 30) * box, y: Math.floor(Math.random() * 30) * box };
+        food = { x: Math.floor(Math.random() * (canvas.width / box)) * box, y: Math.floor(Math.random() * (canvas.height / box)) * box };
+        snake.push({ x: snake[snake.length - 1].x, y: snake[snake.length - 1].y }); // Agregar segmento a la serpiente
     } else {
         snake.pop();
     }
@@ -91,7 +92,7 @@ function startGame() {
     score = 0;
     snake = [{ x: 10 * box, y: 10 * box }];
     direction = "RIGHT";
-    food = { x: Math.floor(Math.random() * 30) * box, y: Math.floor(Math.random() * 30) * box };
+    food = { x: Math.floor(Math.random() * (canvas.width / box)) * box, y: Math.floor(Math.random() * (canvas.height / box)) * box };
     timer = 0;
     timerDisplay.textContent = 0;
     gameInterval = setInterval(draw, 100);
