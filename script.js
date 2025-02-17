@@ -1,28 +1,26 @@
+// Variables globales
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const scoreDisplay = document.getElementById("score");
-const highScoreDisplay = document.getElementById("highScore");
-const timerDisplay = document.getElementById("timer");
+const restartBtn = document.getElementById("restartBtn");
 const menu = document.getElementById("menu");
 const startBtn = document.getElementById("startBtn");
-const restartBtn = document.getElementById("restartBtn");
 
-const box = 20;
-let snake = [{ x: 10 * box, y: 10 * box }];
-let direction = "RIGHT";
-let nextDirection = "RIGHT";
-let food = getRandomFoodPosition();
-let score = 0;
-let highScore = 0;
+const box = 20; // Tamaño de cada cuadro de la serpiente
+let snake = [{ x: 10 * box, y: 10 * box }]; // Posición inicial de la serpiente
+let direction = "RIGHT"; // Dirección inicial
+let nextDirection = "RIGHT"; // Siguiente dirección a la que debe moverse
+let food = getRandomFoodPosition(); // Comida
+let score = 0; // Puntaje
 let gameInterval;
-let timer = 0;
-let timerInterval;
-let isPaused = false;
+let timer = 0; // Temporizador
 
+// Botones y eventos
 startBtn.addEventListener("click", startGame);
 restartBtn.addEventListener("click", resetGame);
 document.addEventListener("keydown", handleKeyPress);
 
+// Manejadores de los botones para controlar la dirección
 document.querySelectorAll(".btn").forEach(button => {
     button.addEventListener("click", (event) => {
         const direction = event.target.dataset.direction;
@@ -30,89 +28,87 @@ document.querySelectorAll(".btn").forEach(button => {
     });
 });
 
+// Función que maneja las teclas de dirección
 function handleKeyPress(event) {
     if (event.key === " ") {
-        resetGame();
+        resetGame(); // Reinicia el juego al presionar "Espacio"
     } else if (event.key === "Escape") {
-        togglePause();
+        togglePause(); // Pausar al presionar "Escape"
     } else {
         changeDirection(event.key);
     }
 }
 
-function togglePause() {
-    if (isPaused) {
-        gameInterval = setInterval(draw, 100);
-        timerInterval = setInterval(() => {
-            timer++;
-            timerDisplay.textContent = timer;
-        }, 1000);
-    } else {
-        clearInterval(gameInterval);
-        clearInterval(timerInterval);
-    }
-    isPaused = !isPaused;
-}
-
-function changeDirection(direction) {
-    if (direction === "ArrowUp" || direction === "w") {
+// Función para cambiar la dirección de la serpiente
+function changeDirection(newDirection) {
+    if (newDirection === "ArrowUp" || newDirection === "w") {
         if (direction !== "DOWN") nextDirection = "UP";
-    } else if (direction === "ArrowDown" || direction === "s") {
+    } else if (newDirection === "ArrowDown" || newDirection === "s") {
         if (direction !== "UP") nextDirection = "DOWN";
-    } else if (direction === "ArrowLeft" || direction === "a") {
+    } else if (newDirection === "ArrowLeft" || newDirection === "a") {
         if (direction !== "RIGHT") nextDirection = "LEFT";
-    } else if (direction === "ArrowRight" || direction === "d") {
+    } else if (newDirection === "ArrowRight" || newDirection === "d") {
         if (direction !== "LEFT") nextDirection = "RIGHT";
     }
 }
 
-function draw() {
-    if (isPaused) return;
-    direction = nextDirection;
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+// Función para pausar y reanudar el juego
+function togglePause() {
+    if (gameInterval) {
+        clearInterval(gameInterval);
+    } else {
+        gameInterval = setInterval(draw, 100); // Reanudar el juego
+    }
+}
 
+// Dibuja el juego en cada ciclo
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el canvas
+
+    // Dibuja la comida
     ctx.fillStyle = "red";
     ctx.beginPath();
     ctx.arc(food.x + box / 2, food.y + box / 2, box / 2, 0, Math.PI * 2);
     ctx.fill();
 
-    snake.forEach((segment, index) => {
-        ctx.fillStyle = index === 0 ? "green" : "lime";
-        ctx.beginPath();
-        ctx.arc(segment.x + box / 2, segment.y + box / 2, box / 2, 0, Math.PI * 2);
-        ctx.fill();
-    });
-
+    // Mueve la serpiente
     let newHead = { x: snake[0].x, y: snake[0].y };
+
     if (direction === "UP") newHead.y -= box;
     if (direction === "DOWN") newHead.y += box;
     if (direction === "LEFT") newHead.x -= box;
     if (direction === "RIGHT") newHead.x += box;
 
-    if (newHead.x === food.x && newHead.y === food.y) {
-        score++;
-        food = getRandomFoodPosition();
-    } else {
-        snake.pop();
-    }
-
+    // Colisión con el borde o con su propio cuerpo
     if (isCollision(newHead)) {
         clearInterval(gameInterval);
-        clearInterval(timerInterval);
-        alert("¡Game Over!");
-        restartBtn.style.display = "block";
+        restartBtn.style.display = "block"; // Mostrar el botón de reiniciar
         return;
     }
 
-    snake.unshift(newHead);
-    scoreDisplay.textContent = score;
-    if (score > highScore) {
-        highScore = score;
-        highScoreDisplay.textContent = highScore;
+    // Comer comida
+    if (newHead.x === food.x && newHead.y === food.y) {
+        score++; // Aumentar el puntaje
+        food = getRandomFoodPosition(); // Nueva comida
+    } else {
+        snake.pop(); // Eliminar la última parte de la serpiente
     }
+
+    snake.unshift(newHead); // Insertar nueva cabeza
+
+    // Dibuja la serpiente
+    snake.forEach((segment, index) => {
+        ctx.fillStyle = index === 0 ? "green" : "lime"; // Color de la cabeza y cuerpo
+        ctx.beginPath();
+        ctx.arc(segment.x + box / 2, segment.y + box / 2, box / 2, 0, Math.PI * 2);
+        ctx.fill();
+    });
+
+    // Actualiza el puntaje
+    scoreDisplay.textContent = score;
 }
 
+// Función que verifica si la serpiente colisiona
 function isCollision(head) {
     return (
         head.x < 0 || head.y < 0 || head.x >= canvas.width || head.y >= canvas.height ||
@@ -120,6 +116,7 @@ function isCollision(head) {
     );
 }
 
+// Función para generar una nueva posición aleatoria de comida
 function getRandomFoodPosition() {
     let newFood;
     do {
@@ -128,29 +125,25 @@ function getRandomFoodPosition() {
     return newFood;
 }
 
+// Función que inicia el juego
 function startGame() {
-    menu.style.display = "none";
-    document.querySelector(".game-container").style.display = "flex";
-    restartBtn.style.display = "none";
+    menu.style.display = "none"; // Ocultar el menú
+    document.querySelector(".game-container").style.display = "flex"; // Mostrar el juego
+    restartBtn.style.display = "none"; // Ocultar el botón de reiniciar
+
     score = 0;
     snake = [{ x: 10 * box, y: 10 * box }];
     direction = "RIGHT";
     nextDirection = "RIGHT";
     food = getRandomFoodPosition();
-    timer = 0;
-    timerDisplay.textContent = 0;
-    isPaused = false;
-    gameInterval = setInterval(draw, 100);
-    timerInterval = setInterval(() => {
-        timer++;
-        timerDisplay.textContent = timer;
-    }, 1000);
+
+    gameInterval = setInterval(draw, 100); // Iniciar el ciclo de dibujo
 }
 
+// Función que reinicia el juego
 function resetGame() {
     clearInterval(gameInterval);
-    clearInterval(timerInterval);
-    menu.style.display = "block";
-    document.querySelector(".game-container").style.display = "none";
-    restartBtn.style.display = "none";
+    menu.style.display = "block"; // Mostrar el menú
+    document.querySelector(".game-container").style.display = "none"; // Ocultar el juego
+    restartBtn.style.display = "none"; // Ocultar el botón de reiniciar
 }
