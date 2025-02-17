@@ -3,26 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego de la Serpiente</title>
+    <title>Juego de Gusano</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="game-container">
-        <div class="header">
-            <span>🍎 <span id="score">0</span></span>
-            <span>🏆 <span id="highScore">0</span></span>
-            <span>⏳ <span id="timer">0</span> s</span>
+        <canvas id="gameCanvas"></canvas>
+        <div class="scoreboard">
+            <p>Score: <span id="score">0</span></p>
         </div>
-        <canvas id="gameCanvas" width="600" height="600"></canvas>
-        <div class="controls">
-            <button class="btn" data-direction="up">⬆️</button>
-            <div>
-                <button class="btn" data-direction="left">⬅️</button>
-                <button class="btn" data-direction="down">⬇️</button>
-                <button class="btn" data-direction="right">➡️</button>
-            </div>
-        </div>
-        <button id="restart">🔄 Reiniciar</button>
     </div>
     <script src="script.js"></script>
 </body>
