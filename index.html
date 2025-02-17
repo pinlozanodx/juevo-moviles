@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,17 +11,20 @@
         <div class="header">
             <span>🍎 <span id="score">0</span></span>
             <span>🏆 <span id="highScore">0</span></span>
+            <span>⏳ <span id="timer">0</span> s</span>
         </div>
         <canvas id="gameCanvas" width="600" height="600"></canvas>
         <div class="controls">
-            <button class="btn" data-direction="up">⬆️</button>
+            <button class="btn" data-direction="arriba">⬆️</button>
             <div>
-                <button class="btn" data-direction="left">⬅️</button>
-                <button class="btn" data-direction="down">⬇️</button>
-                <button class="btn" data-direction="right">➡️</button>
+                <button class="btn" data-direction="izquierda">⬅️</button>
+                <button class="btn" data-direction="abajo">⬇️</button>
+                <button class="btn" data-direction="derecha">➡️</button>
             </div>
         </div>
+        <button id="restart">🔄 Reiniciar</button>
     </div>
+    <audio id="eatSound" src="eat.mp3"></audio>
     <script src="script.js"></script>
 </body>
 </html>
