@@ -1,82 +1,105 @@
-// Obtener el canvas y el contexto
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+const scoreDisplay = document.getElementById("score");
+const foodCountDisplay = document.getElementById("foodCount");
+const timerDisplay = document.getElementById("timer");
+const restartBtn = document.getElementById("restart");
 
-// Tamaño de cada celda en la cuadrícula
 const box = 20;
-
-// Configurar el tamaño del canvas
-canvas.width = 400;
-canvas.height = 400;
-
-// Variables del juego
 let snake = [{ x: 10 * box, y: 10 * box }];
-let food = { x: Math.floor(Math.random() * 20) * box, y: Math.floor(Math.random() * 20) * box };
-let score = 0;
 let direction = "RIGHT";
+let food = { x: Math.floor(Math.random() * 30) * box, y: Math.floor(Math.random() * 30) * box };
+let score = 0;
+let foodCount = 0;
+let gameInterval;
+let timer = 0;
+let timerInterval;
+let gameOver = false;
 
-// Función para cambiar la dirección
 document.addEventListener("keydown", changeDirection);
+restartBtn.addEventListener("click", resetGame);
 
 function changeDirection(event) {
-    if (event.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
-    if (event.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
-    if (event.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
-    if (event.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
+    if (gameOver) return;
+    const key = event.key;
+    if (key === "ArrowUp" && direction !== "DOWN") direction = "UP";
+    if (key === "ArrowDown" && direction !== "UP") direction = "DOWN";
+    if (key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
+    if (key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
 }
 
-// Función para dibujar en el canvas
 function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Dibujar la comida
+    // Dibuja la comida
     ctx.fillStyle = "red";
     ctx.fillRect(food.x, food.y, box, box);
 
-    // Mover el cuerpo de la serpiente
-    let snakeX = snake[0].x;
-    let snakeY = snake[0].y;
-
-    if (direction === "UP") snakeY -= box;
-    if (direction === "DOWN") snakeY += box;
-    if (direction === "LEFT") snakeX -= box;
-    if (direction === "RIGHT") snakeX += box;
-
-    const newHead = { x: snakeX, y: snakeY };
-    snake.unshift(newHead);
-
-    // Comprobar si la serpiente come la comida
-    if (snakeX === food.x && snakeY === food.y) {
-        score++;
-        document.getElementById("score").innerText = score;
-        food = { x: Math.floor(Math.random() * 20) * box, y: Math.floor(Math.random() * 20) * box };
-    } else {
-        snake.pop(); // Elimina la última parte de la serpiente
-    }
-
-    // Dibujar la serpiente
-    ctx.fillStyle = "lime";
+    // Dibuja la serpiente
     snake.forEach((segment, index) => {
         ctx.fillStyle = index === 0 ? "green" : "lime";
         ctx.fillRect(segment.x, segment.y, box, box);
     });
 
-    // Verificar colisiones
-    if (snakeX < 0 || snakeY < 0 || snakeX >= canvas.width || snakeY >= canvas.height || collision(snakeX, snakeY)) {
-        return gameOver();
+    let newHead = { x: snake[0].x, y: snake[0].y };
+
+    if (direction === "UP") newHead.y -= box;
+    if (direction === "DOWN") newHead.y += box;
+    if (direction === "LEFT") newHead.x -= box;
+    if (direction === "RIGHT") newHead.x += box;
+
+    if (newHead.x === food.x && newHead.y === food.y) {
+        foodCount++;
+        score++;
+        foodCountDisplay.textContent = foodCount;
+        food = { x: Math.floor(Math.random() * 30) * box, y: Math.floor(Math.random() * 30) * box };
+    } else {
+        snake.pop();
     }
+
+    if (isCollision(newHead) || newHead.x < 0 || newHead.y < 0 || newHead.x >= canvas.width || newHead.y >= canvas.height) {
+        clearInterval(gameInterval);
+        clearInterval(timerInterval);
+        gameOver = true;
+        restartBtn.disabled = false;
+        alert("¡Perdedor!");
+        return;
+    }
+
+    snake.unshift(newHead);
+    scoreDisplay.textContent = score;
+
+    // Actualiza el temporizador
+    timerDisplay.textContent = timer;
 }
 
-// Función para verificar si la serpiente se choca consigo misma
-function collision(x, y) {
-    return snake.some((segment, index) => index !== 0 && segment.x === x && segment.y === y);
+function isCollision(head) {
+    return snake.some((segment, index) => index !== 0 && segment.x === head.x && segment.y === head.y);
 }
 
-// Función de fin de juego
-function gameOver() {
-    clearInterval(game);
-    alert("¡Juego terminado! Puntuación final: " + score);
+function startGame() {
+    score = 0;
+    foodCount = 0;
+    snake = [{ x: 10 * box, y: 10 * box }];
+    direction = "RIGHT";
+    food = { x: Math.floor(Math.random() * 30) * box, y: Math.floor(Math.random() * 30) * box };
+    timer = 0;
+    gameOver = false;
+    restartBtn.disabled = true;
+    foodCountDisplay.textContent = foodCount;
+    scoreDisplay.textContent = score;
+    timerDisplay.textContent = timer;
+    gameInterval = setInterval(draw, 100);
+    timerInterval = setInterval(() => {
+        timer++;
+    }, 1000);
 }
 
-// Iniciar el juego
-const game = setInterval(draw, 100);
+function resetGame() {
+    clearInterval(gameInterval);
+    clearInterval(timerInterval);
+    startGame();
+}
+
+startGame();
