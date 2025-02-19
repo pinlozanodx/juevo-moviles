@@ -164,4 +164,3 @@ function toggleTheme() {
 generateObstacles();
 generateFood();
 gameInterval = setInterval(draw, gameSpeed);culty("Difícil"));
-});
