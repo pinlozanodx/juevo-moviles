@@ -21,30 +21,6 @@ body {
     margin-bottom: 20px;
 }
 
-.difficulty-menu {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.difficulty-menu label, .difficulty-menu select, .difficulty-menu button {
-    font-size: 18px;
-    margin: 5px;
-}
-
-.difficulty-menu button {
-    background-color: #444;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.difficulty-menu button:hover {
-    background-color: #555;
-}
-
-
 button {
     background-color: #444;
     color: white;
