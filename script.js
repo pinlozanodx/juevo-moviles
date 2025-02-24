@@ -1,24 +1,32 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-const box = 20;
-const canvasSize = 30;
+let box;
+let canvasSize;
+resizeCanvas(); // Ajustar tamaño dinámico
+
 let snake = [{ x: 10 * box, y: 10 * box }];
-let food = { x: Math.floor(Math.random() * canvasSize) * box, y: Math.floor(Math.random() * canvasSize) * box };
+let food = generateFood();
 let score = 0;
 let fruitScore = 0;
 let highScore = localStorage.getItem("high-score") || 0;
 let obstacles = [];
 let direction = "RIGHT";
 let gameInterval;
-let gameSpeed = 100;
 
-function adjustCanvasSize() {
-    canvas.width = Math.min(window.innerWidth - 20, 600);
-    canvas.height = canvas.width;
+let gameSpeed = 100;
+let backgroundColor = "#333";
+
+// Ajustar tamaño del canvas al cambiar la ventana
+window.addEventListener("resize", resizeCanvas);
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth * 0.9;
+    canvas.height = window.innerHeight * 0.7;
+    box = Math.min(canvas.width, canvas.height) / 30; // Ajusta el tamaño del box dinámicamente
+    canvasSize = Math.floor(Math.min(canvas.width, canvas.height) / box);
+    restartGame();
 }
-window.addEventListener("resize", adjustCanvasSize);
-adjustCanvasSize();
 
 function generateObstacles() {
     obstacles = [];
@@ -35,6 +43,20 @@ function drawObstacles() {
     obstacles.forEach(obstacle => {
         ctx.fillRect(obstacle.x, obstacle.y, box, box);
     });
+}
+
+function isCollisionWithObstacles() {
+    for (let i = 0; i < obstacles.length; i++) {
+        if (
+            snake[0].x < obstacles[i].x + box &&
+            snake[0].x + box > obstacles[i].x &&
+            snake[0].y < obstacles[i].y + box &&
+            snake[0].y + box > obstacles[i].y
+        ) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function drawSnake() {
@@ -61,6 +83,7 @@ function updateScore() {
 
 function moveSnake() {
     let head = { ...snake[0] };
+
     if (direction === "LEFT") head.x -= box;
     if (direction === "RIGHT") head.x += box;
     if (direction === "UP") head.y -= box;
@@ -71,8 +94,9 @@ function moveSnake() {
     if (head.x === food.x && head.y === food.y) {
         score++;
         fruitScore++;
-        generateFood();
+        food = generateFood();
         generateObstacles();
+        changeBackgroundColor();
         if (score % 3 === 0) {
             increaseGameSpeed();
         }
@@ -89,10 +113,16 @@ function moveSnake() {
 }
 
 function generateFood() {
-    food = {
+    return {
         x: Math.floor(Math.random() * canvasSize) * box,
         y: Math.floor(Math.random() * canvasSize) * box
     };
+}
+
+function changeBackgroundColor() {
+    const colors = ["#333", "#444", "#555", "#666", "#777", "#888", "#462", "#999", "#891"];
+    backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    canvas.style.backgroundColor = backgroundColor;
 }
 
 function increaseGameSpeed() {
@@ -124,7 +154,9 @@ function restartGame() {
     generateObstacles();
     direction = "RIGHT";
     gameSpeed = 100;
-    generateFood();
+    backgroundColor = "#333";
+    food = generateFood();
+    canvas.style.backgroundColor = backgroundColor;
     clearInterval(gameInterval);
     gameInterval = setInterval(draw, gameSpeed);
 }
@@ -133,6 +165,4 @@ function toggleTheme() {
     document.body.classList.toggle("neon");
 }
 
-generateObstacles();
-generateFood();
 gameInterval = setInterval(draw, gameSpeed);
