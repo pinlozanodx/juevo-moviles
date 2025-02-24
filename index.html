@@ -10,11 +10,13 @@
     <div class="scoreboard">
         <p>Puntaje: <span id="score">0</span></p>
         <p>Puntaje Máximo: <span id="high-score">0</span></p>
-        <p>Puntaje por Manzana: <span id="fruit-score">0</span></p> <!-- Puntaje por manzana -->
+        <p>Puntaje por Manzana: <span id="fruit-score">0</span></p>
         <button id="restart-btn" onclick="restartGame()">Reiniciar</button>
         <button id="theme-toggle-btn" onclick="toggleTheme()">Cambiar Tema</button>
     </div>
-    <canvas id="gameCanvas" width="600" height="600"></canvas>
+    <div class="game-container">
+        <canvas id="gameCanvas"></canvas>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
