@@ -164,3 +164,45 @@ function toggleTheme() {
 generateObstacles();
 generateFood();
 gameInterval = setInterval(draw, gameSpeed);
+
+// Variables para detectar el movimiento táctil
+let touchStartX = 0;
+let touchStartY = 0;
+let touchEndX = 0;
+let touchEndY = 0;
+
+// Capturar el inicio del toque
+document.addEventListener("touchstart", function (e) {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+});
+
+// Capturar el final del toque y determinar dirección
+document.addEventListener("touchend", function (e) {
+    touchEndX = e.changedTouches[0].clientX;
+    touchEndY = e.changedTouches[0].clientY;
+
+    handleSwipe();
+});
+
+// Función para manejar el deslizamiento
+function handleSwipe() {
+    let deltaX = touchEndX - touchStartX;
+    let deltaY = touchEndY - touchStartY;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Movimiento horizontal
+        if (deltaX > 0 && direction !== "LEFT") {
+            direction = "RIGHT";
+        } else if (deltaX < 0 && direction !== "RIGHT") {
+            direction = "LEFT";
+        }
+    } else {
+        // Movimiento vertical
+        if (deltaY > 0 && direction !== "UP") {
+            direction = "DOWN";
+        } else if (deltaY < 0 && direction !== "DOWN") {
+            direction = "UP";
+        }
+    }
+}
