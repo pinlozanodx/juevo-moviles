@@ -172,18 +172,18 @@ let touchEndX = 0;
 let touchEndY = 0;
 
 // Capturar el inicio del toque
-document.addEventListener("touchstart", function (e) {
+window.addEventListener("touchstart", function (e) {
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
-});
+}, { passive: false }); // Evita bloqueo en móviles
 
 // Capturar el final del toque y determinar dirección
-document.addEventListener("touchend", function (e) {
+window.addEventListener("touchend", function (e) {
     touchEndX = e.changedTouches[0].clientX;
     touchEndY = e.changedTouches[0].clientY;
 
     handleSwipe();
-});
+}, { passive: false });
 
 // Función para manejar el deslizamiento
 function handleSwipe() {
@@ -192,16 +192,16 @@ function handleSwipe() {
 
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
         // Movimiento horizontal
-        if (deltaX > 0 && direction !== "LEFT") {
+        if (deltaX > 30 && direction !== "LEFT") {
             direction = "RIGHT";
-        } else if (deltaX < 0 && direction !== "RIGHT") {
+        } else if (deltaX < -30 && direction !== "RIGHT") {
             direction = "LEFT";
         }
     } else {
         // Movimiento vertical
-        if (deltaY > 0 && direction !== "UP") {
+        if (deltaY > 30 && direction !== "UP") {
             direction = "DOWN";
-        } else if (deltaY < 0 && direction !== "DOWN") {
+        } else if (deltaY < -30 && direction !== "DOWN") {
             direction = "UP";
         }
     }
