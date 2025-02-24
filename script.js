@@ -3,7 +3,7 @@ const ctx = canvas.getContext("2d");
 
 let box;
 let canvasSize;
-resizeCanvas(); // Ajustar tamaño dinámico
+resizeCanvas();
 
 let snake = [{ x: 10 * box, y: 10 * box }];
 let food = generateFood();
@@ -17,13 +17,12 @@ let gameInterval;
 let gameSpeed = 100;
 let backgroundColor = "#333";
 
-// Ajustar tamaño del canvas al cambiar la ventana
 window.addEventListener("resize", resizeCanvas);
 
 function resizeCanvas() {
     canvas.width = window.innerWidth * 0.9;
     canvas.height = window.innerHeight * 0.7;
-    box = Math.min(canvas.width, canvas.height) / 30; // Ajusta el tamaño del box dinámicamente
+    box = Math.min(canvas.width, canvas.height) / 30;
     canvasSize = Math.floor(Math.min(canvas.width, canvas.height) / box);
     restartGame();
 }
@@ -31,11 +30,22 @@ function resizeCanvas() {
 function generateObstacles() {
     obstacles = [];
     for (let i = 0; i < score + 5; i++) {
-        obstacles.push({
-            x: Math.floor(Math.random() * canvasSize) * box,
-            y: Math.floor(Math.random() * canvasSize) * box
-        });
+        let obstacle;
+        do {
+            obstacle = {
+                x: Math.floor(Math.random() * canvasSize) * box,
+                y: Math.floor(Math.random() * canvasSize) * box
+            };
+        } while (isPositionOccupied(obstacle));
+        obstacles.push(obstacle);
     }
+}
+
+function isPositionOccupied(position) {
+    return (
+        snake.some(segment => segment.x === position.x && segment.y === position.y) ||
+        (food.x === position.x && food.y === position.y)
+    );
 }
 
 function drawObstacles() {
@@ -46,24 +56,14 @@ function drawObstacles() {
 }
 
 function isCollisionWithObstacles() {
-    for (let i = 0; i < obstacles.length; i++) {
-        if (
-            snake[0].x < obstacles[i].x + box &&
-            snake[0].x + box > obstacles[i].x &&
-            snake[0].y < obstacles[i].y + box &&
-            snake[0].y + box > obstacles[i].y
-        ) {
-            return true;
-        }
-    }
-    return false;
+    return obstacles.some(obstacle => snake[0].x === obstacle.x && snake[0].y === obstacle.y);
 }
 
 function drawSnake() {
-    for (let i = 0; i < snake.length; i++) {
-        ctx.fillStyle = i === 0 ? "green" : "lime";
-        ctx.fillRect(snake[i].x, snake[i].y, box, box);
-    }
+    snake.forEach((segment, index) => {
+        ctx.fillStyle = index === 0 ? "green" : "lime";
+        ctx.fillRect(segment.x, segment.y, box, box);
+    });
 }
 
 function drawFood() {
@@ -89,6 +89,13 @@ function moveSnake() {
     if (direction === "UP") head.y -= box;
     if (direction === "DOWN") head.y += box;
 
+    if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height || isCollisionWithObstacles()) {
+        clearInterval(gameInterval);
+        alert("¡Perdiste!");
+        restartGame();
+        return;
+    }
+
     snake.unshift(head);
 
     if (head.x === food.x && head.y === food.y) {
@@ -103,20 +110,17 @@ function moveSnake() {
     } else {
         snake.pop();
     }
-
-    if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height || isCollisionWithObstacles()) {
-        clearInterval(gameInterval);
-        alert("¡Perdedor lol!");
-        updateScore();
-        restartGame();
-    }
 }
 
 function generateFood() {
-    return {
-        x: Math.floor(Math.random() * canvasSize) * box,
-        y: Math.floor(Math.random() * canvasSize) * box
-    };
+    let newFood;
+    do {
+        newFood = {
+            x: Math.floor(Math.random() * canvasSize) * box,
+            y: Math.floor(Math.random() * canvasSize) * box
+        };
+    } while (isPositionOccupied(newFood));
+    return newFood;
 }
 
 function changeBackgroundColor() {
@@ -151,18 +155,14 @@ function restartGame() {
     snake = [{ x: 10 * box, y: 10 * box }];
     score = 0;
     fruitScore = 0;
-    generateObstacles();
     direction = "RIGHT";
     gameSpeed = 100;
     backgroundColor = "#333";
     food = generateFood();
+    generateObstacles();
     canvas.style.backgroundColor = backgroundColor;
     clearInterval(gameInterval);
     gameInterval = setInterval(draw, gameSpeed);
-}
-
-function toggleTheme() {
-    document.body.classList.toggle("neon");
 }
 
 gameInterval = setInterval(draw, gameSpeed);
