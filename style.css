@@ -20,8 +20,6 @@ body {
 }
 
 #gameCanvas {
-    width: 100%;
-    height: auto;
     background-color: #333;
     border: 5px solid #555;
 }
@@ -55,7 +53,7 @@ button:hover {
         flex-direction: column;
         gap: 5px;
     }
-
+    
     button {
         width: 100%;
         font-size: 14px;
@@ -83,4 +81,3 @@ body.neon button {
 body.neon button:hover {
     background-color: #00ff00;
 }
-
