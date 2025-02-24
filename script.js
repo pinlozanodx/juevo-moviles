@@ -1,70 +1,56 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
-
-let box;
-let canvasSize;
-resizeCanvas();
+const box = 20; 
+const canvasSize = 30; 
 
 let snake = [{ x: 10 * box, y: 10 * box }];
-let food = generateFood();
+let food = { x: Math.floor(Math.random() * canvasSize) * box, y: Math.floor(Math.random() * canvasSize) * box };
 let score = 0;
-let fruitScore = 0;
+let fruitScore = 0; 
 let highScore = localStorage.getItem("high-score") || 0;
 let obstacles = [];
 let direction = "RIGHT";
 let gameInterval;
 
-let gameSpeed = 100;
-let backgroundColor = "#333";
-
-window.addEventListener("resize", resizeCanvas);
-
-function resizeCanvas() {
-    canvas.width = window.innerWidth * 0.9;
-    canvas.height = window.innerHeight * 0.7;
-    box = Math.min(canvas.width, canvas.height) / 30;
-    canvasSize = Math.floor(Math.min(canvas.width, canvas.height) / box);
-    restartGame();
-}
+let gameSpeed = 100; 
+let backgroundColor = "#333"; 
 
 function generateObstacles() {
     obstacles = [];
-    for (let i = 0; i < score + 5; i++) {
-        let obstacle;
-        do {
-            obstacle = {
-                x: Math.floor(Math.random() * canvasSize) * box,
-                y: Math.floor(Math.random() * canvasSize) * box
-            };
-        } while (isPositionOccupied(obstacle));
-        obstacles.push(obstacle);
+    for (let i = 0; i < score + 5; i++) { 
+        obstacles.push({
+            x: Math.floor(Math.random() * canvasSize) * box,
+            y: Math.floor(Math.random() * canvasSize) * box
+        });
     }
 }
 
-function isPositionOccupied(position) {
-    return (
-        snake.some(segment => segment.x === position.x && segment.y === position.y) ||
-        (food.x === position.x && food.y === position.y)
-    );
-}
 
 function drawObstacles() {
-    ctx.fillStyle = "blue";
+    ctx.fillStyle = "blue"; 
     obstacles.forEach(obstacle => {
         ctx.fillRect(obstacle.x, obstacle.y, box, box);
     });
 }
 
+
 function isCollisionWithObstacles() {
-    return obstacles.some(obstacle => snake[0].x === obstacle.x && snake[0].y === obstacle.y);
+    for (let i = 0; i < obstacles.length; i++) {
+        if (snake[0].x === obstacles[i].x && snake[0].y === obstacles[i].y) {
+            return true;
+        }
+    }
+    return false;
 }
 
+
 function drawSnake() {
-    snake.forEach((segment, index) => {
-        ctx.fillStyle = index === 0 ? "green" : "lime";
-        ctx.fillRect(segment.x, segment.y, box, box);
-    });
+    for (let i = 0; i < snake.length; i++) {
+        ctx.fillStyle = i === 0 ? "green" : "lime"; 
+        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+    }
 }
+
 
 function drawFood() {
     ctx.fillStyle = "red";
@@ -83,45 +69,45 @@ function updateScore() {
 
 function moveSnake() {
     let head = { ...snake[0] };
-
+    
     if (direction === "LEFT") head.x -= box;
     if (direction === "RIGHT") head.x += box;
     if (direction === "UP") head.y -= box;
     if (direction === "DOWN") head.y += box;
 
-    if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height || isCollisionWithObstacles()) {
-        clearInterval(gameInterval);
-        alert("¡Perdiste!");
-        restartGame();
-        return;
-    }
+    snake.unshift(head); 
 
-    snake.unshift(head);
-
+    
     if (head.x === food.x && head.y === food.y) {
         score++;
-        fruitScore++;
-        food = generateFood();
-        generateObstacles();
-        changeBackgroundColor();
+        fruitScore++; 
+        generateFood();
+        generateObstacles(); 
+        changeBackgroundColor(); 
         if (score % 3 === 0) {
-            increaseGameSpeed();
+            increaseGameSpeed(); 
         }
     } else {
-        snake.pop();
+        snake.pop(); 
+    }
+
+    
+    if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height || isCollisionWithObstacles()) {
+        clearInterval(gameInterval);
+        alert("¡Perdedor lol!");
+        updateScore();
+        restartGame();
     }
 }
 
+
 function generateFood() {
-    let newFood;
-    do {
-        newFood = {
-            x: Math.floor(Math.random() * canvasSize) * box,
-            y: Math.floor(Math.random() * canvasSize) * box
-        };
-    } while (isPositionOccupied(newFood));
-    return newFood;
+    food = {
+        x: Math.floor(Math.random() * canvasSize) * box,
+        y: Math.floor(Math.random() * canvasSize) * box
+    };
 }
+
 
 function changeBackgroundColor() {
     const colors = ["#333", "#444", "#555", "#666", "#777", "#888", "#462", "#999", "#891"];
@@ -129,11 +115,13 @@ function changeBackgroundColor() {
     canvas.style.backgroundColor = backgroundColor;
 }
 
+
 function increaseGameSpeed() {
-    gameSpeed = Math.max(50, gameSpeed * 0.95);
+    gameSpeed = Math.max(50, gameSpeed * 0.95); 
     clearInterval(gameInterval);
     gameInterval = setInterval(draw, gameSpeed);
 }
+
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -144,6 +132,7 @@ function draw() {
     updateScore();
 }
 
+
 document.addEventListener("keydown", function (e) {
     if (e.keyCode === 37 && direction !== "RIGHT") direction = "LEFT";
     if (e.keyCode === 38 && direction !== "DOWN") direction = "UP";
@@ -151,18 +140,27 @@ document.addEventListener("keydown", function (e) {
     if (e.keyCode === 40 && direction !== "UP") direction = "DOWN";
 });
 
+
 function restartGame() {
     snake = [{ x: 10 * box, y: 10 * box }];
     score = 0;
-    fruitScore = 0;
+    fruitScore = 0; 
+    generateObstacles();
     direction = "RIGHT";
     gameSpeed = 100;
     backgroundColor = "#333";
-    food = generateFood();
-    generateObstacles();
+    generateFood();
     canvas.style.backgroundColor = backgroundColor;
     clearInterval(gameInterval);
     gameInterval = setInterval(draw, gameSpeed);
 }
 
+
+function toggleTheme() {
+    document.body.classList.toggle("neon");
+}
+
+
+generateObstacles();
+generateFood();
 gameInterval = setInterval(draw, gameSpeed);
